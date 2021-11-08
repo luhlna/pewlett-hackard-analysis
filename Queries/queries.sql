@@ -237,3 +237,34 @@ INNER JOIN departments AS d
 ON (de.dept_no = d.dept_no)
 WHERE d.dept_name IN ('Sales','Development');
 
+--Active employees
+SELECT e.emp_no,
+    e.first_name,
+    e.last_name,
+	e.birth_date,
+	d.dept_name,
+	ti.title,
+	de.to_date
+INTO active_emp
+FROM employees as e
+LEFT JOIN dept_emp as de
+ON e.emp_no = de.emp_no
+LEFT JOIN titles as ti
+ON ti.emp_no = de.emp_no
+LEFT JOIN departments as d
+ON de.dept_no = d.dept_no
+WHERE de.to_date = ('9999-01-01');
+
+SELECT COUNT(title), title 
+INTO active_titles
+FROM active_emp
+GROUP BY title
+ORDER BY COUNT(title) DESC;
+
+SELECT act.title,
+	act.count,
+	rt.count
+--INTO active_vs_retiring
+FROM active_titles AS act
+LEFT JOIN retiring_titles AS rt
+ON act.title = rt.title;
